@@ -18,10 +18,6 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-# Judul Aplikasi
-st.title("🎓 Prediksi Karir Mahasiswa 🎓")
-st.markdown("Aplikasi prediksi karir mahasiswa menggunakan metode **Regresi Linier**.")
-
 st.sidebar.header("Navigasi")
 menu = st.sidebar.selectbox("Pilih Halaman", ["Dataset", "Visualisasi", "Prediksi Karir"])
 
@@ -50,31 +46,20 @@ df["Java"] = df["Java"].apply(encode_skills)
 
 # Halaman Dataset
 if menu == "Dataset":
-    st.image("prediksi.jpg", use_container_width=True)
+    st.image("prediksi.jpg", use_container_width=True)  # Hanya tampil di halaman Dataset
+    st.title("🎓 Prediksi Karir Mahasiswa 🎓")
+    st.markdown("Aplikasi prediksi karir mahasiswa menggunakan metode *Regresi Linier*.")
+
     st.header("📊 Dataset Mahasiswa")
-    
-    # Expander dengan desain yang lebih modern
-    with st.expander("🔍 Lihat Data Lengkap", expanded=True):
-        st.dataframe(df.drop(columns=["Interested Domain Encoded"]), use_container_width=True)
-    
-    # Kolom dengan analisis statistik
+    with st.expander("Lihat Data"):
+        st.dataframe(df.drop(columns=["Interested Domain Encoded"]))
     col1, col2 = st.columns(2)
-    
     with col1:
-        st.subheader("📈 Statistik Deskriptif")
-        # Tampilkan statistik deskriptif
-        desc_stats = df.drop(columns=["Interested Domain Encoded"]).describe()
-        st.dataframe(desc_stats, use_container_width=True)
-    
+        st.subheader("Statistik Deskriptif")
+        st.write(df.drop(columns=["Interested Domain Encoded"]).describe())
     with col2:
-        st.subheader("🕵️ Analisis Data")
-        # Informasi data kosong
-        st.markdown('<div class="metric-container">', unsafe_allow_html=True)
-        st.write("**Jumlah Data Kosong per Kolom:**")
-        missing_data = df.isnull().sum()
-        for column, missing in missing_data.items():
-            st.text(f"{column}: {missing}")
-        st.markdown('</div>', unsafe_allow_html=True)
+        st.subheader("Data Kosong")
+        st.write(df.isnull().sum())
 
 # Halaman Visualisasi
 elif menu == "Visualisasi":
