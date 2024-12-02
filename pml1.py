@@ -50,6 +50,7 @@ df["Java"] = df["Java"].apply(encode_skills)
 
 # Halaman Dataset
 if menu == "Dataset":
+    st.image("prediksi.jpg", use_container_width=True)
     st.header("📊 Dataset Mahasiswa")
     
     # Expander dengan desain yang lebih modern
@@ -78,23 +79,28 @@ if menu == "Dataset":
 # Halaman Visualisasi
 elif menu == "Visualisasi":
     st.header("📈 Visualisasi Data Mahasiswa")
+    
+    col1, col2 = st.columns(2)
 
-    st.subheader("Distribusi Karir Masa Depan")
-    fig, ax = plt.subplots(figsize=(10, 6))
-    career_counts = df["Future Career"].value_counts().sort_values(ascending=False)
-    sns.barplot(y=career_counts.index, x=career_counts.values, palette="viridis", ax=ax)
-    ax.set_title("Distribusi Karir Masa Depan", fontsize=16)
-    ax.set_xlabel("Jumlah", fontsize=14)
-    ax.set_ylabel("Future Career", fontsize=14)
-    st.pyplot(fig)
+    # Distribusi Karir Masa Depan
+    with col1:
+        st.subheader("Distribusi Karir Masa Depan")
+        fig, ax = plt.subplots(figsize=(8, 5))
+        career_counts = df["Future Career"].value_counts().sort_values(ascending=False)
+        sns.barplot(y=career_counts.index, x=career_counts.values, palette="viridis", ax=ax)
+        ax.set_title("Distribusi Karir Masa Depan", fontsize=14)
+        ax.set_xlabel("Jumlah", fontsize=12)
+        ax.set_ylabel("Future Career", fontsize=12)
+        st.pyplot(fig)
 
-    st.subheader("Word Cloud Karir Masa Depan")
-    all_career = " ".join(df["Future Career"].astype(str))
-    wordcloud = WordCloud(width=800, height=400, background_color="white").generate(all_career)
-    fig, ax = plt.subplots(figsize=(10, 6))
-    plt.imshow(wordcloud, interpolation="bilinear")
-    plt.axis("off")
-    st.pyplot(fig)
+    with col2:
+        st.subheader("Word Cloud Karir Masa Depan")
+        all_career = " ".join(df["Future Career"].astype(str))
+        wordcloud = WordCloud(width=600, height=300, background_color="white").generate(all_career)
+        fig, ax = plt.subplots(figsize=(8, 5))
+        ax.imshow(wordcloud, interpolation="bilinear")
+        ax.axis("off")
+        st.pyplot(fig)
     
     st.subheader("Hubungan IPK Dengan Karir")
     fig, ax = plt.subplots(figsize=(10, 6))
@@ -132,15 +138,16 @@ elif menu == "Prediksi Karir":
     
     python_skill = st.select_slider(
         "Tingkat Keahlian Bahasa Pemrograman Python",
-        options=["Weak", "Average", "Strong"], value="Average")
-    
+        options=["pemula", "menengah", "mahir"], value="menengah")
+
     sql_skill = st.select_slider(
         "Tingkat Keahlian Bahasa Pemrograman SQL",
-        options=["Weak", "Average", "Strong"], value="Average")
-    
+        options=["pemula", "menengah", "mahir"], value="menengah")
+
     java_skill = st.select_slider(
         "Tingkat Keahlian Bahasa Pemrograman Java",
-        options=["Weak", "Average", "Strong"], value="Average")
+        options=["pemula", "menengah", "mahir"], value="menengah")
+
     
     # Konversi input
     python_skill = encode_skills(python_skill)
