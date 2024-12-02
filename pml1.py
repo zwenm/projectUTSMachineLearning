@@ -22,10 +22,8 @@ st.set_page_config(
 st.title("🎓 Prediksi Karir Mahasiswa 🎓")
 st.markdown("Aplikasi prediksi karir mahasiswa menggunakan metode **Regresi Linier**.")
 
-st.sidebar.title("Navigasi")
-menu = st.sidebar.radio(
-    "Pilih Halaman", ["Dataset", "Visualisasi", "Prediksi Karir"], index=0
-)
+st.sidebar.header("Navigasi")
+menu = st.sidebar.selectbox("Pilih Halaman", ["Dataset", "Visualisasi", "Prediksi Karir"])
 
 # Fungsi untuk menyimpan model
 def save_model(model, filename="model_prediksi_karir.sav"):
@@ -53,15 +51,29 @@ df["Java"] = df["Java"].apply(encode_skills)
 # Halaman Dataset
 if menu == "Dataset":
     st.header("📊 Dataset Mahasiswa")
-    with st.expander("Lihat Data"):
-        st.dataframe(df.drop(columns=["Interested Domain Encoded"]))
+    
+    # Expander dengan desain yang lebih modern
+    with st.expander("🔍 Lihat Data Lengkap", expanded=True):
+        st.dataframe(df.drop(columns=["Interested Domain Encoded"]), use_container_width=True)
+    
+    # Kolom dengan analisis statistik
     col1, col2 = st.columns(2)
+    
     with col1:
-        st.subheader("Statistik Deskriptif")
-        st.write(df.drop(columns=["Interested Domain Encoded"]).describe())
+        st.subheader("📈 Statistik Deskriptif")
+        # Tampilkan statistik deskriptif
+        desc_stats = df.drop(columns=["Interested Domain Encoded"]).describe()
+        st.dataframe(desc_stats, use_container_width=True)
+    
     with col2:
-        st.subheader("Data Kosong")
-        st.write(df.isnull().sum())
+        st.subheader("🕵️ Analisis Data")
+        # Informasi data kosong
+        st.markdown('<div class="metric-container">', unsafe_allow_html=True)
+        st.write("**Jumlah Data Kosong per Kolom:**")
+        missing_data = df.isnull().sum()
+        for column, missing in missing_data.items():
+            st.text(f"{column}: {missing}")
+        st.markdown('</div>', unsafe_allow_html=True)
 
 # Halaman Visualisasi
 elif menu == "Visualisasi":
@@ -73,12 +85,12 @@ elif menu == "Visualisasi":
     sns.barplot(y=career_counts.index, x=career_counts.values, palette="viridis", ax=ax)
     ax.set_title("Distribusi Karir Masa Depan", fontsize=16)
     ax.set_xlabel("Jumlah", fontsize=14)
-    ax.set_ylabel("Karir Masa Depan", fontsize=14)
+    ax.set_ylabel("Future Career", fontsize=14)
     st.pyplot(fig)
 
     st.subheader("Word Cloud Karir Masa Depan")
-    all_cars = " ".join(df["Future Career"].astype(str))
-    wordcloud = WordCloud(width=800, height=400, background_color="white").generate(all_cars)
+    all_career = " ".join(df["Future Career"].astype(str))
+    wordcloud = WordCloud(width=800, height=400, background_color="white").generate(all_career)
     fig, ax = plt.subplots(figsize=(10, 6))
     plt.imshow(wordcloud, interpolation="bilinear")
     plt.axis("off")
