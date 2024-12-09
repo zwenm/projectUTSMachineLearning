@@ -283,14 +283,9 @@ with tab4:
     y = df["Future Career"].astype("category").cat.codes
 
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-    try:
-        model = load_model()
-        st.success("Model yang sudah dilatih berhasil dimuat.")
-    except:
-        model = LinearRegression()
-        model.fit(X_train, y_train)
-        save_model(model)  # Simpan model setelah dilatih
-        st.success("Model baru telah dilatih dan disimpan.")
+    model = LinearRegression()
+    model.fit(X_train, y_train)
+    save_model(model)
 
     # Penjelasan model
     st.markdown("### Penjelasan Model")
